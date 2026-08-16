@@ -1,24 +1,76 @@
-*.exe
-*.pt
-*.onnx
+# Python virtual environments & build artifacts
+.venv/
+venv/
+venv.bk/
+env/
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+
+# OS system files (macOS / Windows)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Heavy model files & weights (RVC checkpoints, indexes, embeddings)
 *.pth
+*.pt
 *.index
+*.onnx
+*.ckpt
+*.bin
+*.safetensors
+*.engine
+*.tflite
+
+# Audio datasets & audio outputs
+*.wav
 *.mp3
 *.flac
 *.ogg
 *.m4a
-*.bin
-*.wav
-*.txt
-*.zip
-*.png
-*.safetensors
+*.aac
+*.opus
+*.wma
 
-assets/audios
-assets/datasets
-logs
-rvc/models
-env
-venv
-.venv
+# Media, archives & logs
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+*.png
+*.jpg
+*.jpeg
+*.exe
+*.txt
+
+# Applio data directories
+logs/
+assets/audios/
+assets/datasets/
+assets/weights/
+assets/indices/
+outputs/
+rvc/models/embedders/
+rvc/models/pretrained/
+rvc/models/pretrained_v2/
+
+# Environment variables & secrets
+.env
+.env.*
+*.secret
+
+# Prevent ignoring essential repository files
+!requirements.txt
+!README.md
+!TERMS_OF_USE.md
+!LICENSE
+!AGENTS.md
