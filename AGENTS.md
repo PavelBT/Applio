@@ -94,6 +94,9 @@ Para lograr una automatización limpia sin saturar el control de versiones con g
 4. **Seguridad de Credenciales y Secretos:**
    - **Cero secretos en Git:** Queda strictly prohibido incluir tokens de HuggingFace, claves API o llaves privadas en código rastreado (`.py`, `.ipynb`).
    - Las variables sensibles deben consumirse a través de variables de entorno o mediante lectura de archivos `.env` ignorados por Git.
+5. **Protocolo Anti-Colisión de Entrenamiento (`TRAINING.lock`):**
+   - Al iniciar entrenamiento en Colab o Local, se genera automáticamente `ApplioBackup/logs/{model_name}/TRAINING.lock`.
+   - Queda estrictamente prohibido reanudar, modificar o sobreescribir un modelo que posea un candado activo desde otro entorno para evitar corrupción de checkpoints (`G_*.pth`/`D_*.pth`) o TensorBoard. El candado se libera automáticamente al terminar las épocas.
 
 ---
 
