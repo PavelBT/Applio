@@ -62,6 +62,7 @@ outputs/
 rvc/models/embedders/
 rvc/models/pretrained/
 rvc/models/pretrained_v2/
+rvc/models/pretraineds/custom/pretrains.json
 
 # Environment variables & secrets
 .env
