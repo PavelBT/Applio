@@ -64,6 +64,10 @@ rvc/models/pretrained/
 rvc/models/pretrained_v2/
 rvc/models/pretraineds/custom/pretrains.json
 
+# Migration outputs
+Applio_Drive_Migration.zip
+ApplioBackup_Migration_Output/
+
 # Environment variables & secrets
 .env
 .env.*
