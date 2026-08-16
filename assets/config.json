@@ -13,11 +13,11 @@
   "model_author": "None",
   "precision": "fp16",
   "realtime": {
-    "input_device": "",
-    "output_device": "",
-    "monitor_device": "",
-    "model_file": "",
-    "index_file": "",
+    "input_device": "2: Samsung SlimFit Cam (Core Audio)",
+    "output_device": "1: Smart M80F (Core Audio)",
+    "monitor_device": "1: Smart M80F (Core Audio)",
+    "model_file": "logs/pavel-model/assets/weights/pavel-model.pth",
+    "index_file": "logs/pavel-model/logs/pavel-model/added_IVF1635_Flat_nprobe_pavel-model_v2.index",
     "client_input_device": "",
     "client_output_device": "",
     "client_monitor_device": ""
