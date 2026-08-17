@@ -6,11 +6,11 @@ datasets de audio y pre-entrenados custom para evitar llenar el disco local.
 Uso: python3 scripts/migrate_to_drive.py
 """
 
-import os
 import shutil
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
+
 
 def main():
     print("=" * 65)
@@ -48,10 +48,16 @@ def main():
     copied_indexes = 0
     if logs_local.exists():
         for model_folder in logs_local.iterdir():
-            if model_folder.is_dir() and not model_folder.name.startswith("mute") and model_folder.name != "reference":
+            if (
+                model_folder.is_dir()
+                and not model_folder.name.startswith("mute")
+                and model_folder.name != "reference"
+            ):
                 # Copy export .pth and .index
                 for f in model_folder.glob("*.pth"):
-                    if "_best_epoch" in f.name or ("e_" in f.name and "s.pth" in f.name):
+                    if "_best_epoch" in f.name or (
+                        "e_" in f.name and "s.pth" in f.name
+                    ):
                         dest_pth = weights_dir / f.name
                         if not dest_pth.exists():
                             shutil.copy2(f, dest_pth)
@@ -96,6 +102,7 @@ def main():
     print(f"   • Pre-entrenados custom: {copied_pretraineds}")
     print("=" * 65)
     print(f"✅ Carpeta de migración limpia generada en: {gdrive_target}")
+
 
 if __name__ == "__main__":
     main()

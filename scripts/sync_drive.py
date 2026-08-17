@@ -9,7 +9,6 @@ Soporta:
   - python3 scripts/sync_drive.py unlock <model_name> : Remueve candado de entrenamiento.
 """
 
-import sys
 import os
 import json
 import shutil
@@ -29,8 +28,9 @@ POSSIBLE_GDRIVE_PATHS = [
     Path.home() / "Library" / "CloudStorage",
     Path.home() / "Google Drive" / "My Drive",
     Path.home() / "GoogleDrive",
-    Path("/Volumes/GoogleDrive/My Drive")
+    Path("/Volumes/GoogleDrive/My Drive"),
 ]
+
 
 def find_gdrive_applio_backup():
     # 1. Buscar en CloudStorage carpetas de GoogleDrive
@@ -43,7 +43,7 @@ def find_gdrive_applio_backup():
                     target = item / "My Drive" / "ApplioBackup"
                     target.mkdir(parents=True, exist_ok=True)
                     return target
-    
+
     # 2. Si hay variable de entorno GDRIVE_PATH
     if os.getenv("GDRIVE_PATH"):
         target = Path(os.getenv("GDRIVE_PATH")) / "ApplioBackup"
@@ -55,7 +55,9 @@ def find_gdrive_applio_backup():
     fallback.mkdir(parents=True, exist_ok=True)
     return fallback
 
+
 GDRIVE_BACKUP = find_gdrive_applio_backup()
+
 
 def get_lock_info(model_name):
     lock_file = GDRIVE_BACKUP / "logs" / model_name / "TRAINING.lock"
@@ -67,6 +69,7 @@ def get_lock_info(model_name):
             return {"status": "LOCKED", "model_name": model_name}
     return None
 
+
 def set_lock(model_name, running_on="MacBook_Local"):
     log_dir = GDRIVE_BACKUP / "logs" / model_name
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -75,11 +78,12 @@ def set_lock(model_name, running_on="MacBook_Local"):
         "model_name": model_name,
         "status": "TRAINING_IN_PROGRESS",
         "running_on": running_on,
-        "started_at": datetime.now().isoformat()
+        "started_at": datetime.now().isoformat(),
     }
     with open(lock_file, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
     print(f"🔒 Candado de entrenamiento creado para '{model_name}' ({running_on})")
+
 
 def remove_lock(model_name):
     lock_file = GDRIVE_BACKUP / "logs" / model_name / "TRAINING.lock"
@@ -88,6 +92,7 @@ def remove_lock(model_name):
         print(f"🔓 Candado de entrenamiento removido para '{model_name}'")
     else:
         print(f"ℹ️ No se encontró candado activo para '{model_name}'")
+
 
 def cmd_status():
     print("=" * 65)
@@ -111,10 +116,16 @@ def cmd_status():
         for model_name, lock in active_locks:
             running = lock.get("running_on", "Desconocido")
             started = lock.get("started_at", "N/A")
-            print(f"   🔒 Modelo: '{model_name}' | En ejecución en: {running} | Inicio: {started}")
-        print("   ⚠️ No inicies ni modifiques este modelo localmente mientras esté bloqueado.\n")
+            print(
+                f"   🔒 Modelo: '{model_name}' | En ejecución en: {running} | Inicio: {started}"
+            )
+        print(
+            "   ⚠️ No inicies ni modifiques este modelo localmente mientras esté bloqueado.\n"
+        )
     else:
-        print("✅ Ningún modelo está en proceso de entrenamiento activo en este momento.\n")
+        print(
+            "✅ Ningún modelo está en proceso de entrenamiento activo en este momento.\n"
+        )
 
     # 2. Comparar modelos .pth en pesos
     drive_weights = GDRIVE_BACKUP / "weights"
@@ -132,6 +143,7 @@ def cmd_status():
         in_local = "✅ Local" if pth in local_pth else "❌ No Local"
         in_remote = "☁️ Drive" if pth in remote_pth else "❌ No Drive"
         print(f"   • {pth:<35} [{in_local}] [{in_remote}]")
+
 
 def cmd_pull():
     print("⬇️  SINCRONIZANDO DESDE GOOGLE DRIVE A MACBOOK LOCAL...")
@@ -159,7 +171,10 @@ def cmd_pull():
                 shutil.copy2(idx, dest)
                 print(f"  ✅ Copiado índice: {idx.name}")
 
-    print("\n🎉 Sincronización PULL completada. Los modelos están listos para inferir en la MacBook.")
+    print(
+        "\n🎉 Sincronización PULL completada. Los modelos están listos para inferir en la MacBook."
+    )
+
 
 def cmd_push():
     print("⬆️  SINCRONIZANDO DESDE MACBOOK LOCAL A GOOGLE DRIVE...")
@@ -187,12 +202,21 @@ def cmd_push():
                 shutil.copy2(idx, dest)
                 print(f"  ✅ Subido índice: {idx.name}")
 
-    print("\n🎉 Sincronización PUSH completada. Tus modelos y datos están disponibles en Google Drive.")
+    print(
+        "\n🎉 Sincronización PUSH completada. Tus modelos y datos están disponibles en Google Drive."
+    )
+
 
 def main():
     parser = argparse.ArgumentParser(description="Applio Sync Drive CLI")
-    parser.add_argument("action", choices=["status", "pull", "push", "lock", "unlock"], help="Acción a ejecutar")
-    parser.add_argument("model_name", nargs="?", help="Nombre del modelo (para lock/unlock)")
+    parser.add_argument(
+        "action",
+        choices=["status", "pull", "push", "lock", "unlock"],
+        help="Acción a ejecutar",
+    )
+    parser.add_argument(
+        "model_name", nargs="?", help="Nombre del modelo (para lock/unlock)"
+    )
     args = parser.parse_args()
 
     if args.action == "status":
@@ -203,14 +227,19 @@ def main():
         cmd_push()
     elif args.action == "lock":
         if not args.model_name:
-            print("❌ Especifica el nombre del modelo. Ej: python3 scripts/sync_drive.py lock Modelo_V1")
+            print(
+                "❌ Especifica el nombre del modelo. Ej: python3 scripts/sync_drive.py lock Modelo_V1"
+            )
         else:
             set_lock(args.model_name)
     elif args.action == "unlock":
         if not args.model_name:
-            print("❌ Especifica el nombre del modelo. Ej: python3 scripts/sync_drive.py unlock Modelo_V1")
+            print(
+                "❌ Especifica el nombre del modelo. Ej: python3 scripts/sync_drive.py unlock Modelo_V1"
+            )
         else:
             remove_lock(args.model_name)
+
 
 if __name__ == "__main__":
     main()
